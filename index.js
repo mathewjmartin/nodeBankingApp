@@ -32,4 +32,30 @@ var getCustomerAccounts = async (db) => {
         return result;
 }
 
+app.post('/customerAccounts', jsonParser, (req, res) => {
+
+    const newAccount = {
+        firstName: req.body.firstName,
+        surname: req.body.surname,
+        accountNumber: req.body.accountNumber,
+        balance: req.body.balance,
+    }
+
+    MongoClient.connect(url, {useNewUrlParser: true, useUnifiedTopology: true}, async (err, client) => {
+        let db = client.db('nodeBankingApp')
+        let result = await addNewAccount(db, newAccount)
+        if(result.insertedCount){
+            res.send('New account added')
+        } else {
+            res.send('There was an error adding new account')
+        }
+    })
+})
+
+var addNewAccount = async (db, dog) => {
+    let collection = db.collection('customerAccounts')
+    let result = await collection.insertOne(account)
+    return result
+}
+
 app.listen(port, () => console.log(`Banking app listening on port ${port}`));
