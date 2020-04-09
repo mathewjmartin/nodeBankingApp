@@ -26,7 +26,7 @@ app.get('/customerAccounts', (req, res) => {
 
 })
 
-var getCustomerAccounts = async (db) => {
+const getCustomerAccounts = async (db) => {
         let collection = db.collection('customerAccounts');
         let result = await collection.find({}).toArray();
         return result;
@@ -44,17 +44,18 @@ app.post('/customerAccounts', jsonParser, (req, res) => {
     MongoClient.connect(url, {useNewUrlParser: true, useUnifiedTopology: true}, async (err, client) => {
         let db = client.db('nodeBankingApp')
         let result = await addNewAccount(db, newAccount)
-        if(result.insertedCount){
+        if(result.insertedCount ===1){
             res.send('New account added')
         } else {
             res.send('There was an error adding new account')
         }
+        client.close()
     })
 })
 
-var addNewAccount = async (db, dog) => {
+var addNewAccount = async (db, newAccountToSend) => {
     let collection = db.collection('customerAccounts')
-    let result = await collection.insertOne(account)
+    let result = await collection.insertOne(newAccountToSend)
     return result
 }
 
